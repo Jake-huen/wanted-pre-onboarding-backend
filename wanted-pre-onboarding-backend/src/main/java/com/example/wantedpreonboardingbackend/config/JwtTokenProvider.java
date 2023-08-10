@@ -30,7 +30,6 @@ public class JwtTokenProvider {
     String salt;
 
     private final long at_exp = 1000L * 60 * 30;
-    private final long rt_exp = 1000L & 60 * 60;
 
     // secret key를 가지고 key값 저장
     public JwtTokenProvider(@Value("${jwt.secret}") String salt) {
@@ -40,27 +39,21 @@ public class JwtTokenProvider {
     // 토큰 생성
     public TokenInfo generateToken(Member member) {
         // Access Token 생성
-        Claims claims = Jwts.claims().setSubject(member.getUsername());
-        claims.put("memberId", member.getId());
+        Claims claims = Jwts.claims().setSubject(member.getId().toString());
+        claims.put("memberEmail", member.getEmail());
 
         long now = (new Date()).getTime();
         Date accessTokenExpiresIn = new Date(now + at_exp);
+
         String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + rt_exp))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
         return TokenInfo.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
     }
 
