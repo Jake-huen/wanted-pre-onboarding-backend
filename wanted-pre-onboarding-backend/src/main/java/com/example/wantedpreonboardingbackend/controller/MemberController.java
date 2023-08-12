@@ -17,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("login")
-    public LoginResponseMemberDTO login(@RequestBody RequestMemberDTO requestMemberDto) {
+    public LoginResponseMemberDTO login(@Valid @RequestBody RequestMemberDTO requestMemberDto) {
         return memberService.login(requestMemberDto.getEmail(), requestMemberDto.getPassword());
     }
 

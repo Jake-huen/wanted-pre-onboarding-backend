@@ -56,7 +56,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
-        System.out.println("accessToken = " + accessToken);
+        // System.out.println("accessToken = " + accessToken);
         Claims claims = parseClaims(accessToken);
 
         UserDetails principal = new User(claims.getSubject(), "", Collections.emptyList());

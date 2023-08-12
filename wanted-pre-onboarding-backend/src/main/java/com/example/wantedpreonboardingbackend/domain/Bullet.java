@@ -1,12 +1,14 @@
 package com.example.wantedpreonboardingbackend.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @RequiredArgsConstructor
+@Getter
 public class Bullet {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
