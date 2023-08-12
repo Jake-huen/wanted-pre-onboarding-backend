@@ -63,4 +63,39 @@ public class BulletService {
         Bullet findBullet = bulletRepository.findById(id).get();
         return new BulletResponseDTO(findBullet.getTitle(), findBullet.getContent(), findBullet.getMember().getEmail());
     }
+
+    public String editBullet(HttpServletRequest request, Long id, BulletDTO bulletDTO) {
+        MemberDTO memberDto = memberService.checkMember(request);
+        Optional<Member> member = memberRepository.findByEmail(memberDto.getEmail());
+        Optional<Bullet> bullet = bulletRepository.findById(id);
+        if(bullet.isPresent()){
+            if(bullet.get().getMember().getId().equals(member.get().getId())){
+                bullet.get().update(bulletDTO);
+                Bullet selectedArticle = bulletRepository.save(bullet.get());
+                return bullet.get().getTitle()+" 게시물이 수정되었습니다.";
+            }else{
+                return "게시글 작성자가 아닙니다. 다시 확인해주세요";
+            }
+
+        }else{
+            throw new RuntimeException("해당하는 게시글이 없습니다.");
+        }
+    }
+
+    public String deleteBullet(HttpServletRequest request, @RequestParam Long id) {
+        MemberDTO memberDto = memberService.checkMember(request);
+        Optional<Member> member = memberRepository.findByEmail(memberDto.getEmail());
+        Optional<Bullet> bullet = bulletRepository.findById(id);
+        if(bullet.isPresent()){
+            if(bullet.get().getMember().getId().equals(member.get().getId())){
+                bulletRepository.delete(bullet.get());
+                return "삭제되었습니다.";
+            }else{
+                return "게시글 작성자가 아닙니다. 다시 확인해주세요";
+            }
+
+        }else{
+            throw new RuntimeException("해당하는 게시글이 없습니다.");
+        }
+    }
 }

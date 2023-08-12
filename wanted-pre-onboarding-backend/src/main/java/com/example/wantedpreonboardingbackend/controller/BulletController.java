@@ -28,11 +28,17 @@ public class BulletController {
     }
 
     @GetMapping()
-    public BulletResponseDTO getBullet(Long id){
+    public BulletResponseDTO getBullet(@RequestParam Long id){
         return bulletService.getBullet(id);
     }
 
-    // 과제 6 : 특정 게시글 수정
+    @PostMapping("/edit")
+    public String editBullet(HttpServletRequest request, @RequestParam Long id, @RequestBody BulletDTO bulletDTO){
+        return bulletService.editBullet(request, id, bulletDTO);
+    }
 
-    // 과제 7 : 특정 게시글 삭제
+    @PostMapping("/delete")
+    public String deleteBullet(HttpServletRequest request, @RequestParam Long id) {
+        return bulletService.deleteBullet(request, id);
+    }
 }

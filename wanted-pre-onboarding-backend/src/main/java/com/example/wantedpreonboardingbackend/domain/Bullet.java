@@ -1,10 +1,12 @@
 package com.example.wantedpreonboardingbackend.domain;
 
+import com.example.wantedpreonboardingbackend.dto.BulletDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @RequiredArgsConstructor
@@ -27,5 +29,10 @@ public class Bullet {
         this.title = title;
         this.content = content;
         this.member = member;
+    }
+
+    public void update(BulletDTO bulletDTO) {
+        this.title = bulletDTO.getTitle();
+        this.content = bulletDTO.getContent();
     }
 }
