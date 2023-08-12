@@ -31,25 +31,23 @@ public class JwtTokenProvider {
 
     private final long at_exp = 1000L * 60 * 30;
 
-    // secret key를 가지고 key값 저장
     public JwtTokenProvider(@Value("${jwt.secret}") String salt) {
         this.key = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
     }
 
-    // 토큰 생성
     public TokenInfo generateToken(Member member) {
         // Access Token 생성
-        Claims claims = Jwts.claims().setSubject(member.getId().toString());
-        claims.put("memberEmail", member.getEmail());
+        Claims claims = Jwts.claims().setSubject(member.getEmail());
+        claims.put("memberId", member.getId());
 
         long now = (new Date()).getTime();
         Date accessTokenExpiresIn = new Date(now + at_exp);
-
         String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
 
         return TokenInfo.builder()
                 .grantType("Bearer")
@@ -57,13 +55,10 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
-        // 토큰 복호화
         System.out.println("accessToken = " + accessToken);
         Claims claims = parseClaims(accessToken);
 
-        // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails principal = new User(claims.getSubject(), "", Collections.emptyList());
         return new UsernamePasswordAuthenticationToken(principal, "", Collections.emptyList());
     }
@@ -77,7 +72,6 @@ public class JwtTokenProvider {
             System.out.println("e = " + e);
             throw new RuntimeException(e);
         }
-
     }
 
     private Claims parseClaims(String accessToken) {

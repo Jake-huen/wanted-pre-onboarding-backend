@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @Builder
-public class RequestMemberDto {
+public class RequestMemberDTO {
     @Email(message = "이메일 형식이 틀렸습니다")
     private String email;
 

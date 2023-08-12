@@ -1,8 +1,8 @@
 package com.example.wantedpreonboardingbackend.controller;
 
 import com.example.wantedpreonboardingbackend.domain.Member;
-import com.example.wantedpreonboardingbackend.dto.RequestMemberDto;
-import com.example.wantedpreonboardingbackend.dto.LoginResponseMemberDto;
+import com.example.wantedpreonboardingbackend.dto.RequestMemberDTO;
+import com.example.wantedpreonboardingbackend.dto.LoginResponseMemberDTO;
 import com.example.wantedpreonboardingbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +17,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("login")
-    public LoginResponseMemberDto login(@RequestBody RequestMemberDto requestMemberDto) {
+    public LoginResponseMemberDTO login(@RequestBody RequestMemberDTO requestMemberDto) {
         return memberService.login(requestMemberDto.getEmail(), requestMemberDto.getPassword());
     }
 
     @PostMapping("signup")
-    public String signup(@Valid @RequestBody RequestMemberDto requestMemberDto) {
+    public Member signup(@Valid @RequestBody RequestMemberDTO requestMemberDto) {
         return memberService.signup(requestMemberDto.getEmail(), requestMemberDto.getPassword());
     }
 }

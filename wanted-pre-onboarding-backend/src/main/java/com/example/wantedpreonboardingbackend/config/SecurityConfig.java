@@ -25,11 +25,6 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
@@ -40,6 +35,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers("/members/login").permitAll()
                     .antMatchers("/members/signup").permitAll()
+                    .antMatchers("/bullet/new").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

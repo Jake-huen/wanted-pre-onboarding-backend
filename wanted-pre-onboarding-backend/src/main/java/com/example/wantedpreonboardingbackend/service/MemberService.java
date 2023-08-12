@@ -2,7 +2,8 @@ package com.example.wantedpreonboardingbackend.service;
 
 import com.example.wantedpreonboardingbackend.config.JwtTokenProvider;
 import com.example.wantedpreonboardingbackend.domain.Member;
-import com.example.wantedpreonboardingbackend.dto.LoginResponseMemberDto;
+import com.example.wantedpreonboardingbackend.dto.LoginResponseMemberDTO;
+import com.example.wantedpreonboardingbackend.dto.MemberDTO;
 import com.example.wantedpreonboardingbackend.dto.TokenInfo;
 import com.example.wantedpreonboardingbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service
@@ -23,7 +25,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginResponseMemberDto login(String email, String password) {
+    public LoginResponseMemberDTO login(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         System.out.println("authenticationToken = " + authenticationToken);
@@ -33,16 +35,32 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(email);
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(member.get());
 
-        return new LoginResponseMemberDto(email, tokenInfo.getGrantType(), tokenInfo.getAccessToken());
+        return new LoginResponseMemberDTO(email, tokenInfo.getGrantType(), tokenInfo.getAccessToken());
     }
 
-    public String signup(String email, String password) {
+    public Member signup(String email, String password) {
         Member member = Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .build();
         System.out.println("member = " + member);
         Member savedMember = memberRepository.save(member);
-        return savedMember.getEmail() + "으로 회원가입 성공";
+
+        return savedMember;
+    }
+
+    public MemberDTO checkMember(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        token = jwtTokenProvider.getToken(token);
+        String email = jwtTokenProvider.getEmail(token);
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if(member.isPresent()){
+            MemberDTO memberDto = MemberDTO.builder()
+                    .email(member.get().getEmail())
+                    .build();
+            return memberDto;
+        }else{
+            throw new RuntimeException("존재하지 않는 이메일입니다.");
+        }
     }
 }
