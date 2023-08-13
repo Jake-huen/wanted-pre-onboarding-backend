@@ -18,7 +18,7 @@ Bullet 테이블 : primary Key로 id를 두고, 제목 내용을 위한 title, c
 
 
 ### 구현한 API의 동작을 촬영한 데모 영상 링크
-
+## https://www.youtube.com/watch?v=Wc_P1adPhkQ
 
 
 ### 구현 방법 및 이유에 대한 간략한 설명
